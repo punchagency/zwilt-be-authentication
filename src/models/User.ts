@@ -1,8 +1,10 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { UserRole, USER_ROLES, AUTH } from '../utils/constants';
+import { UserRole, USER_ROLES, AUTH } from "../utils";
+import { preSetPasswordHook } from "./user/middleware/pre_setPassword.middleware";
+import { comparePassword } from "./user/methods/comparePassword.method";
 
-const mongoosePaginate = require('@r5v/mongoose-paginate');
+
 
 // ============================================================================
 // TYPES
@@ -28,7 +30,7 @@ export interface IUser extends Document {
 // CONSTANTS
 // ============================================================================
 
-const BCRYPT_SALT_ROUNDS = 12;
+
 
 // ============================================================================
 // SCHEMA
@@ -81,20 +83,8 @@ const userSchema = new Schema<IUser>(
 // MIDDLEWARE
 // ============================================================================
 
-/**
- * Hash password before saving
- */
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
 
-  try {
-    const salt = await bcrypt.genSalt(BCRYPT_SALT_ROUNDS);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error as Error);
-  }
-});
+userSchema.pre('save', preSetPasswordHook);
 
 // ============================================================================
 // METHODS
@@ -103,19 +93,12 @@ userSchema.pre('save', async function (next) {
 /**
  * Compare provided password with hashed password
  */
-userSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
-};
+userSchema.methods.comparePassword = comparePassword;
 
 // ============================================================================
 // PLUGINS
 // ============================================================================
 
-if (mongoosePaginate && typeof mongoosePaginate === 'function') {
-  userSchema.plugin(mongoosePaginate);
-}
 
 // ============================================================================
 // MODEL
