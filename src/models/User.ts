@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
+import { UserRole, USER_ROLES, AUTH } from '../utils/constants';
 
 const mongoosePaginate = require('@r5v/mongoose-paginate');
 
@@ -16,6 +17,8 @@ export interface IUser extends Document {
   firstName: string;
   lastName: string;
   isActive: boolean;
+  role: UserRole;
+  isSuperuser: boolean;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -26,7 +29,6 @@ export interface IUser extends Document {
 // ============================================================================
 
 const BCRYPT_SALT_ROUNDS = 12;
-const MIN_PASSWORD_LENGTH = 6;
 
 // ============================================================================
 // SCHEMA
@@ -44,7 +46,7 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
-      minlength: MIN_PASSWORD_LENGTH,
+      minlength: AUTH.MIN_PASSWORD_LENGTH,
     },
     firstName: {
       type: String,
@@ -59,6 +61,15 @@ const userSchema = new Schema<IUser>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    role: {
+      type: String,
+      enum: Object.values(USER_ROLES),
+      default: USER_ROLES.USER,
+    },
+    isSuperuser: {
+      type: Boolean,
+      default: false,
     },
   },
   {

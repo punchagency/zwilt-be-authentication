@@ -10,6 +10,7 @@ import {
   HTTP_STATUS,
   ERROR_MESSAGES,
   SUCCESS_MESSAGES,
+  USER_ROLES,
 } from '../utils/constants';
 
 // ============================================================================
@@ -21,7 +22,7 @@ import {
  */
 export async function register(req: Request, res: Response): Promise<void> {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName, role, isSuperuser } = req.body;
 
     // Validation
     if (!email || !password || !firstName || !lastName) {
@@ -35,7 +36,7 @@ export async function register(req: Request, res: Response): Promise<void> {
     if (!isValidPassword(password)) {
       res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
-        message: ERROR_MESSAGES.PASSWORD_TOO_SHORT(AUTH.MIN_PASSWORD_LENGTH),
+        message: ERROR_MESSAGES.PASSWORD_WEAK,
       });
       return;
     }
@@ -58,6 +59,8 @@ export async function register(req: Request, res: Response): Promise<void> {
       password,
       firstName,
       lastName,
+      role: role || USER_ROLES.USER,
+      isSuperuser: isSuperuser || false,
     });
 
     await user.save();

@@ -6,11 +6,24 @@
  * Authentication constants
  */
 export const AUTH = {
-  MIN_PASSWORD_LENGTH: 6,
+  MIN_PASSWORD_LENGTH: 8,
   JWT_EXPIRY: '7d',
   JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
   BCRYPT_SALT_ROUNDS: 12,
 };
+
+/**
+ * User role constants
+ */
+export const USER_ROLES = {
+  USER: 'user',
+  ADMIN: 'admin',
+  MODERATOR: 'moderator',
+  QA: 'qa',
+  PROJECT_MANAGER: 'project_manager',
+} as const;
+
+export type UserRole = typeof USER_ROLES[keyof typeof USER_ROLES];
 
 /**
  * HTTP status codes
@@ -32,6 +45,7 @@ export const ERROR_MESSAGES = {
   ALL_FIELDS_REQUIRED: 'All fields are required',
   PASSWORD_TOO_SHORT: (length: number) =>
     `Password must be at least ${length} characters long`,
+  PASSWORD_WEAK: 'Password must be at least 8 characters long and contain at least 1 lowercase letter, 1 uppercase letter, and 1 special character',
   USER_EXISTS: 'User with this email already exists',
   INVALID_CREDENTIALS: 'Invalid email or password',
   ACCOUNT_DEACTIVATED: 'Account is deactivated',

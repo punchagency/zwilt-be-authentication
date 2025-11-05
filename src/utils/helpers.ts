@@ -46,6 +46,8 @@ export function formatUserResponse(user: any) {
     firstName: user.firstName,
     lastName: user.lastName,
     isActive: user.isActive,
+    role: user.role,
+    isSuperuser: user.isSuperuser,
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   };
@@ -61,9 +63,24 @@ export function isValidEmail(email: string): boolean {
 
 /**
  * Validate password strength
+ * Requirements: minimum 8 characters, 1 lowercase, 1 uppercase, 1 special character
  */
 export function isValidPassword(password: string): boolean {
-  return password.length >= AUTH.MIN_PASSWORD_LENGTH;
+  // Check minimum length
+  if (password.length < AUTH.MIN_PASSWORD_LENGTH) {
+    return false;
+  }
+
+  // Check for at least one lowercase letter
+  const hasLowerCase = /[a-z]/.test(password);
+
+  // Check for at least one uppercase letter
+  const hasUpperCase = /[A-Z]/.test(password);
+
+  // Check for at least one special character
+  const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+
+  return hasLowerCase && hasUpperCase && hasSpecialChar;
 }
 
 // ============================================================================
