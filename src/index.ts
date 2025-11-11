@@ -1,11 +1,7 @@
 import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
 import DatabaseService from './services/database';
 import { SERVER } from "./utils";
 import { BaseRouter } from "./routes";
-
-// Load environment variables
-dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || SERVER.DEFAULT_PORT;

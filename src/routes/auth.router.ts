@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { BaseRouter } from "./index";
 import { getProfileController, loginController, registerController,logoutController  } from "../controllers";
 import { authenticateToken } from "../middleware/auth";
 

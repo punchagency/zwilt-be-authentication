@@ -93,4 +93,4 @@ BaseRouter.get('/verify', (req, res) => {
 
 /**END Move to Controllers****/
 
-BaseRouter.get('/auth', AuthRouter)
+BaseRouter.use('/auth', AuthRouter)

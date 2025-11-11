@@ -2,6 +2,11 @@
 // APPLICATION CONSTANTS
 // ============================================================================
 
+// Load environment variables if not already loaded
+if (!process.env.MONGODB_URI) {
+  require('dotenv').config();
+}
+
 /**
  * Authentication constants
  */
