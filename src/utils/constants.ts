@@ -6,10 +6,10 @@
  * Authentication constants
  */
 export const AUTH = {
-  MIN_PASSWORD_LENGTH: 8,
-  JWT_EXPIRY: '7d',
+  MIN_PASSWORD_LENGTH: parseInt(process.env.MIN_PASSWORD_LENGTH || '8'),
+  JWT_EXPIRY: process.env.JWT_EXPIRY || '7d',
   JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
-  BCRYPT_SALT_ROUNDS: 12,
+  BCRYPT_SALT_ROUNDS: parseInt(process.env.BCRYPT_SALT_ROUNDS || '12'),
 };
 
 /**
@@ -66,16 +66,8 @@ export const SUCCESS_MESSAGES = {
 };
 
 /**
- * Database constants
- */
-export const DATABASE = {
-  DEFAULT_URI: 'mongodb://localhost:27017/express-app',
-  CONNECTION_TIMEOUT: 10000,
-};
-
-/**
  * Server constants
  */
 export const SERVER = {
-  DEFAULT_PORT: 3001,
+  PORT: parseInt(process.env.PORT || '8080'),
 };

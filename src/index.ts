@@ -1,14 +1,30 @@
+import * as dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
 import DatabaseService from './services/database';
 import { SERVER } from "./utils";
 import { BaseRouter } from "./routes";
 
-// Load environment variables
-dotenv.config();
+// ============================================================================
+// ENVIRONMENT CONFIGURATION
+// ============================================================================
+
+// Load environment variables from .env file BEFORE initializing other modules
+// This ensures all environment variables are available when modules are initialized
+if (process.env.NODE_ENV !== 'production') {
+  const result = dotenv.config({ quiet: true });
+
+  if (result.error) {
+    console.error('✗ Failed to load .env file:', result.error);
+  } else {
+    const envCount = Object.keys(result.parsed || {}).length;
+    console.log(`✓ Loaded ${envCount} environment variables from .env`);
+  }
+} else {
+  console.log('✓ Running in production mode - using process environment variables');
+}
 
 const app: Express = express();
-const port = process.env.PORT || SERVER.DEFAULT_PORT;
+const port = process.env.PORT || SERVER.PORT;
 
 // ============================================================================
 // MIDDLEWARE
@@ -22,11 +38,6 @@ app.use(express.urlencoded({ extended: true }));
 // ============================================================================
 
 app.use( BaseRouter);
-
-
-
-
-
 
 
 // ============================================================================
@@ -51,9 +62,9 @@ async function startServer(): Promise<void> {
   }
 }
 //TODO: ADD error handling middleware
-// ============================================================================
+// ===========================================================================
 // ERROR HANDLING
-// ============================================================================
+// ===========================================================================
 
 
 // ============================================================================

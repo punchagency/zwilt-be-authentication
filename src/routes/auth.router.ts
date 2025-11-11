@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { BaseRouter } from "./index";
 import { getProfileController, loginController, registerController,logoutController  } from "../controllers";
 import { authenticateToken } from "../middleware/auth";
 
@@ -13,19 +12,19 @@ export const AuthRouter = Router()
 /**
  * POST /register - Register a new user
  */
-BaseRouter.post('/register', registerController);
+AuthRouter.post('/register', registerController);
 
 /**
  * POST /login - Authenticate user and return token
  */
-BaseRouter.post('/login', loginController);
+AuthRouter.post('/login', loginController);
 
 /**
  * GET /profile - Get current user profile (requires authentication)
  */
-BaseRouter.get('/profile', authenticateToken, getProfileController);
+AuthRouter.get('/profile', authenticateToken, getProfileController);
 
 /**
  * POST /logout - Logout user (client-side token removal)
  */
-BaseRouter.post('/logout', logoutController);
+AuthRouter.post('/logout', logoutController);
