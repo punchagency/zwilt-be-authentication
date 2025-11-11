@@ -2,11 +2,6 @@
 // APPLICATION CONSTANTS
 // ============================================================================
 
-// Load environment variables if not already loaded
-if (!process.env.MONGODB_URI) {
-  require('dotenv').config();
-}
-
 /**
  * Authentication constants
  */
@@ -73,6 +68,10 @@ export const SUCCESS_MESSAGES = {
 /**
  * Database constants
  */
+if (!process.env.MONGODB_URI) {
+  require('dotenv').config();
+}
+
 export const DATABASE = {
   DEFAULT_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/express-app',
   CONNECTION_TIMEOUT: 10000,

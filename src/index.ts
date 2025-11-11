@@ -1,7 +1,17 @@
 import express, { Express, Request, Response } from 'express';
+import * as dotenv from 'dotenv';
 import DatabaseService from './services/database';
 import { SERVER } from "./utils";
 import { BaseRouter } from "./routes";
+
+const result = dotenv.config({ quiet: true });
+
+if (result.error) {
+  console.error('✗ Failed to load .env file:', result.error);
+} else {
+  const envCount = Object.keys(result.parsed || {}).length;
+  console.log(`✓ Loaded ${envCount} environment variables from .env`);
+}
 
 const app: Express = express();
 const port = process.env.PORT || SERVER.DEFAULT_PORT;
@@ -18,11 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 // ============================================================================
 
 app.use( BaseRouter);
-
-
-
-
-
 
 
 // ============================================================================
