@@ -1,5 +1,9 @@
 import mongoose from 'mongoose';
 
+const DB_CONFIG = {
+  CONNECTION_TIMEOUT: 10000,
+};
+
 // ============================================================================
 // DATABASE SERVICE
 // ============================================================================
@@ -33,24 +37,29 @@ class DatabaseService {
     }
 
     try {
-      const { DATABASE } = await import('../utils/constants');
-      const mongoUri = DATABASE.DEFAULT_URI;
+      const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/express-app';
 
-      await mongoose.connect(mongoUri);
+      await mongoose.connect(mongoUri, {
+        connectTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
+        serverSelectionTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
+      });
 
       this.isConnected = true;
       console.log('✓ Database connected successfully');
     } catch (error) {
       const errorMessage = (error as Error).message;
       console.error('✗ Database connection failed:', errorMessage);
-      console.log(
-        '⚠ Server will continue without database connection for development purposes'
-      );
 
-      // Don't throw error in development - allow server to start
+      // In production, fail fast on connection errors
       if (process.env.NODE_ENV === 'production') {
+        console.error('✗ Cannot start server in production without database connection');
         throw error;
       }
+
+      // In development, allow server to start but log the warning
+      console.warn(
+        '⚠ Server starting without database connection (development mode only)'
+      );
     }
   }
 

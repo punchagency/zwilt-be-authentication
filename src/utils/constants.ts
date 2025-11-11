@@ -66,20 +66,8 @@ export const SUCCESS_MESSAGES = {
 };
 
 /**
- * Database constants
- */
-if (!process.env.MONGODB_URI) {
-  require('dotenv').config();
-}
-
-export const DATABASE = {
-  DEFAULT_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/express-app',
-  CONNECTION_TIMEOUT: 10000,
-};
-
-/**
  * Server constants
  */
 export const SERVER = {
-  DEFAULT_PORT: parseInt(process.env.PORT || '8080'),
+  PORT: parseInt(process.env.PORT || '8080'),
 };

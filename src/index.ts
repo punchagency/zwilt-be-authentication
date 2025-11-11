@@ -1,20 +1,30 @@
-import express, { Express, Request, Response } from 'express';
 import * as dotenv from 'dotenv';
+import express, { Express, Request, Response } from 'express';
 import DatabaseService from './services/database';
 import { SERVER } from "./utils";
 import { BaseRouter } from "./routes";
 
-const result = dotenv.config({ quiet: true });
+// ============================================================================
+// ENVIRONMENT CONFIGURATION
+// ============================================================================
 
-if (result.error) {
-  console.error('✗ Failed to load .env file:', result.error);
+// Load environment variables from .env file BEFORE initializing other modules
+// This ensures all environment variables are available when modules are initialized
+if (process.env.NODE_ENV !== 'production') {
+  const result = dotenv.config({ quiet: true });
+
+  if (result.error) {
+    console.error('✗ Failed to load .env file:', result.error);
+  } else {
+    const envCount = Object.keys(result.parsed || {}).length;
+    console.log(`✓ Loaded ${envCount} environment variables from .env`);
+  }
 } else {
-  const envCount = Object.keys(result.parsed || {}).length;
-  console.log(`✓ Loaded ${envCount} environment variables from .env`);
+  console.log('✓ Running in production mode - using process environment variables');
 }
 
 const app: Express = express();
-const port = process.env.PORT || SERVER.DEFAULT_PORT;
+const port = process.env.PORT || SERVER.PORT;
 
 // ============================================================================
 // MIDDLEWARE
