@@ -4,8 +4,6 @@ services:
   backend:
     build: .
     ports:
-      - '3000:3000'
-    environment:
-      - PORT=3000
-      - MONGODB_URI=mongodb+srv://cursorcursor520_db_user:6Zn9uZdGCWj21zLB@ticketing.q53wlae.mongodb.net/
-      - JWT_SECRET=JWT-KEY
+      - '8080:8080'
+    env_file:
+      - .env

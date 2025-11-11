@@ -2,15 +2,14 @@
 FROM node:24.11.0
 
 WORKDIR /app
- 
-COPY package*.json ./
 
-COPY . .
+COPY package*.json ./
 
 RUN npm install
 
-ENV Port = 3000
+COPY . .
 
-EXPOSE 3000
+RUN npm run build
+
 
 CMD ["npm" , "start"]

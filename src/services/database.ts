@@ -33,8 +33,8 @@ class DatabaseService {
     }
 
     try {
-      const mongoUri =
-        process.env.MONGODB_URI || 'mongodb://localhost:27017/express-app';
+      const { DATABASE } = await import('../utils/constants');
+      const mongoUri = DATABASE.DEFAULT_URI;
 
       await mongoose.connect(mongoUri);
 
