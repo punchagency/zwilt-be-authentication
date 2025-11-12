@@ -1,5 +1,7 @@
 # zwilt-authentication
 
+A Node.js/Express authentication API with MongoDB integration.
+
 ## Environment Variables
 
 The application requires the following environment variables:
