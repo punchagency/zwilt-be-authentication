@@ -40,8 +40,8 @@ export function extractTokenFromHeader(authHeader: string | undefined): string |
  * Format user response data
  */
 export function formatUserResponse(user: any) {
-  const { _id: id, email, firstName, lastName, isActive, role, isSuperuser, createdAt, updatedAt } = user;
-  return { id, email, firstName, lastName, isActive, role, isSuperuser, createdAt, updatedAt };
+  const { _id: id, ...rest } = user;
+  return { id, ...rest };
 }
 
 /**
