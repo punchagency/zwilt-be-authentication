@@ -4,6 +4,39 @@ const DB_CONFIG = {
   CONNECTION_TIMEOUT: 10000,
 };
 
+/**
+ * Builds MongoDB connection URI from separate environment variables
+ * @returns {string} Complete MongoDB connection URI
+ * @throws {Error} If required environment variables are missing
+ */
+
+const buildMongoURI = (): string => {
+  const {
+    MONGO_PROTOCOL: protocol = 'mongodb+srv',
+    MONGO_USERNAME: username,
+    MONGO_PWD: password,
+    MONGO_URI: host,
+    MONGO_DB: database,
+  } = process.env;
+
+  // Validate required variables
+  if (!username) {
+    throw new Error('MONGO_USERNAME environment variable is not defined');
+  }
+  if (!password) {
+    throw new Error('MONGO_PWD environment variable is not defined');
+  }
+  if (!host) {
+    throw new Error('MONGO_URI environment variable is not defined');
+  }
+  if (!database) {
+    throw new Error('MONGO_DB environment variable is not defined');
+  }
+
+  // Construct and return the URI
+  return `${protocol}://${username}:${encodeURIComponent(password)}@${host}/${database}`;
+};
+
 // ============================================================================
 // DATABASE SERVICE
 // ============================================================================
@@ -37,7 +70,7 @@ class DatabaseService {
     }
 
     try {
-      const mongoUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/express-app';
+      const mongoUri = buildMongoURI();
 
       await mongoose.connect(mongoUri, {
         connectTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
@@ -49,17 +82,9 @@ class DatabaseService {
     } catch (error) {
       const errorMessage = (error as Error).message;
       console.error('✗ Database connection failed:', errorMessage);
-
-      // In production, fail fast on connection errors
-      if (process.env.NODE_ENV === 'production') {
-        console.error('✗ Cannot start server in production without database connection');
-        throw error;
-      }
-
-      // In development, allow server to start but log the warning
-      console.warn(
-        '⚠ Server starting without database connection (development mode only)'
-      );
+      console.error('✗ Terminating process due to database connection failure');
+      process.kill(process.pid, 'SIGTERM');
+      process.exit(1);
     }
   }
 
@@ -76,8 +101,11 @@ class DatabaseService {
       this.isConnected = false;
       console.log('✓ Database disconnected successfully');
     } catch (error) {
-      console.error('✗ Database disconnection failed:', error);
-      throw error;
+      const errorMessage = (error as Error).message;
+      console.error('✗ Database disconnection failed:', errorMessage);
+      console.error('✗ Terminating process due to database disconnection error');
+      process.kill(process.pid, 'SIGTERM');
+      process.exit(1);
     }
   }
 
