@@ -72,10 +72,7 @@ class DatabaseService {
     try {
       const mongoUri = buildMongoURI();
 
-      await mongoose.connect(mongoUri, {
-        connectTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
-        serverSelectionTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
-      });
+   
       await mongoose.connect(mongoUri, {
         connectTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
         serverSelectionTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
