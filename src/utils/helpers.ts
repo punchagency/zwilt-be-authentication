@@ -28,8 +28,8 @@ export function verifyToken(token: string): any {
  */
 export function extractTokenFromHeader(authHeader: string | undefined): string | null {
   if (!authHeader) return null;
-  const parts = authHeader.split(' ');
-  return parts.length === 2 && parts[0] === 'Bearer' ? parts[1] : null;
+  const [scheme, token] = authHeader.split(' ');
+  return scheme === 'Bearer' && token ? token : null;
 }
 
 // ============================================================================
@@ -40,17 +40,8 @@ export function extractTokenFromHeader(authHeader: string | undefined): string |
  * Format user response data
  */
 export function formatUserResponse(user: any) {
-  return {
-    id: user._id,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    isActive: user.isActive,
-    role: user.role,
-    isSuperuser: user.isSuperuser,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt,
-  };
+  const { _id: id, ...rest } = user;
+  return { id, ...rest };
 }
 
 /**
