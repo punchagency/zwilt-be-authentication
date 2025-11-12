@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-=======
-version: '3.8'
-
->>>>>>> f2aaaf43734cc99f19b680da10e497bc77df4529
 services:
   backend:
     build: .
     ports:
       - '8080:8080'
     env_file:
-      - .env
+      - .enva
