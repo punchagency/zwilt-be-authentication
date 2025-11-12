@@ -76,6 +76,10 @@ class DatabaseService {
         connectTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
         serverSelectionTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
       });
+      await mongoose.connect(mongoUri, {
+        connectTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
+        serverSelectionTimeoutMS: DB_CONFIG.CONNECTION_TIMEOUT,
+      });
 
       this.isConnected = true;
       console.log('✓ Database connected successfully');
