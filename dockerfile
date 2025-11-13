@@ -1,13 +1,27 @@
-
-FROM node:24.11.0
+# Builder stage
+FROM node:24 AS builder
 
 WORKDIR /app
 
+COPY package*.json ./
+
+RUN npm ci
+
 COPY . .
 
-RUN npm install
+RUN npx tsc --project tsconfig.prod.json
 
-RUN npm run build
+# Runtime stage
+FROM node:24-alpine AS runtime
 
+WORKDIR /app
 
-CMD ["npm" , "start"]
+COPY package*.json ./
+
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY --from=builder /app/dist .
+
+EXPOSE 8080
+
+CMD ["node", "index.js"]
