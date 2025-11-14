@@ -1,8 +1,10 @@
 import * as dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
 import DatabaseService from './services/database';
-import { SERVER } from "./utils";
+import { SERVER, logger } from "./utils";
 import { BaseRouter } from "./routes";
+import { requestIdMiddleware } from './middleware/requestId';
+import { requestLoggerMiddleware } from './middleware/requestLogger';
 
 // ============================================================================
 // ENVIRONMENT CONFIGURATION
@@ -30,6 +32,12 @@ const port = process.env.PORT || SERVER.PORT;
 // MIDDLEWARE
 // ============================================================================
 
+// Request ID middleware - must be first to attach ID to all requests
+app.use(requestIdMiddleware);
+
+// Request logging middleware - logs incoming and outgoing requests
+app.use(requestLoggerMiddleware);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -52,12 +60,10 @@ async function startServer(): Promise<void> {
     await DatabaseService.getInstance().connect();
 
     app.listen(port, () => {
-      console.log(`✓ Server running on port ${port}`);
-      console.log(`✓ Health check: http://localhost:${port}/health`);
-      console.log(`✓ Verification: http://localhost:${port}/verify`);
+      logger.info('Server started successfully');
     });
   } catch (error) {
-    console.error('✗ Failed to start server:', error);
+    logger.error('Failed to start server', { error });
     process.exit(1);
   }
 }
@@ -72,13 +78,13 @@ async function startServer(): Promise<void> {
 // ============================================================================
 
 process.on('SIGINT', async () => {
-  console.log('\n✓ Shutting down gracefully...');
+  logger.info('Shutting down gracefully (SIGINT)...');
   await DatabaseService.getInstance().disconnect();
   process.exit(0);
 });
 
 process.on('SIGTERM', async () => {
-  console.log('\n✓ Shutting down gracefully...');
+  logger.info('Shutting down gracefully (SIGTERM)...');
   await DatabaseService.getInstance().disconnect();
   process.exit(0);
 });

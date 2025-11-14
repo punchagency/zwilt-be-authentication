@@ -4,6 +4,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: Partial<IUser>;
+      id?: string;
       log?: {
         startTimeMs?: number
         endTimeMs?: number
